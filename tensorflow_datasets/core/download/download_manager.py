@@ -42,7 +42,21 @@ class NonMatchingChecksumError(Exception):
   """The downloaded file doesn't have expected checksum."""
 
   def __init__(self, url, tmp_path):
-    msg = 'Artifact %s, downloaded to %s, has wrong checksum.' % (url, tmp_path)
+    msg = (
+        'Artifact {}, downloaded to {}, has wrong checksum. This might '
+        'indicates:\n'
+        ' * The website may be temporary down and return 503 webpage. Please '
+        'check the url.\n'
+        ' * For Google Drive url, try later as Drive sometimes reject'
+        'download when too many people access the same url. See '
+        'https://github.com/tensorflow/datasets/issues/1482\n'
+        ' * The dataset may have been updated and the file replaced by a new '
+        'one. In this case, please send us a PR with the new checksums after '
+        'having checked that the generation still works.\n'
+        ' * If you\'re adding a new dataset, don\'t forget to register the '
+        'checksums as explained in: '
+        'https://www.tensorflow.org/datasets/add_dataset#2_run_download_and_prepare_locally\n'
+    ).format(url, tmp_path)
     Exception.__init__(self, msg)
 
 
